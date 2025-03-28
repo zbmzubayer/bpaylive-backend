@@ -7,7 +7,9 @@ import { advertisementController } from './advertisement.controller';
 const router: Router = Router();
 
 router.get('/', advertisementController.find);
+
 router.use(authGuard());
+
 router.patch(
   '/carousel',
   upload.fields([

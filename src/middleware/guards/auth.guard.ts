@@ -24,7 +24,6 @@ export const authGuard = () => async (req: Request, res: Response, next: NextFun
       throw new ApiError(HttpStatus.UNAUTHORIZED, 'Email not found in the authentication token.');
     }
     // Find the user by email in the database
-    // TODO: Get the user from Redis cache if available
     const user = await prisma.user.findUnique({ where: { username: payload.username } });
     if (!user) {
       throw new ApiError(
@@ -32,7 +31,6 @@ export const authGuard = () => async (req: Request, res: Response, next: NextFun
         'User associated with the authentication token email not found.'
       );
     }
-    // TODO: Role based access control
     req.user = user; // Attach user to the request object
 
     next();
