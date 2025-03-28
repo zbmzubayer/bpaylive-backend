@@ -10,10 +10,10 @@ async function bootstrap() {
   try {
     await connectDb();
     server.listen(port, () => {
-      console.log('Bootstrap: ', `BetLive24 server started on port: ${port}`);
+      console.log('Bootstrap: ', `BPAYLIVE server started on port: ${port}`);
     });
   } catch (error) {
-    console.log(`Failed to start BetLive24 API: ${error}`);
+    console.log(`Failed to start BPAYLIVE API: ${error}`);
     process.exit(1);
   }
 }
