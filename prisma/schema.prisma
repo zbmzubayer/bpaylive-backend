@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+  password  String
+  role      String
+}
+
+model Sport {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @unique
+  icon      String
+
+  matches       Match[]
+  sportChannels SportChannel[]
+}
+
+model Channel {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String   @unique
+  icon        String
+  recommended Boolean  @default(false)
+  streamUrls  String[]
+
+  sportChannels  SportChannel[]
+  channelMatches ChannelMatch[]
+  matches        Match[]
+}
+
+model SportChannel {
+  id        String @id @default(uuid())
+  sportId   String
+  channelId String
+
+  sport   Sport   @relation(fields: [sportId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  channel Channel @relation(fields: [channelId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@unique([sportId, channelId])
+  @@index([sportId, channelId])
+}
+
+model Match {
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  title        String
+  description  String?
+  url          String   @unique
+  thumbnail    String?
+  startTime    DateTime
+  trending     Boolean
+  tags         String[]
+  hasFakeViews Boolean  @default(false)
+  viewInterval Int?
+  minViews     Int?
+  maxViews     Int?
+
+  sportId          String
+  defaultChannelId String
+
+  defaultChannel Channel        @relation(fields: [defaultChannelId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  sport          Sport          @relation(fields: [sportId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  channelMatches ChannelMatch[]
+
+  @@index([sportId, defaultChannelId, startTime])
+}
+
+model ChannelMatch {
+  id        String @id @default(uuid())
+  channelId String
+  matchId   String
+
+  channel Channel @relation(fields: [channelId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  match   Match   @relation(fields: [matchId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@unique([channelId, matchId])
+  @@index([channelId, matchId])
+}
+
+model Advertisement {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  carouselBanner1    String?
+  carouselBanner2    String?
+  carouselBanner3    String?
+  carouselBanner4    String?
+  carouselBanner5    String?
+  carouselBanner1Url String?
+  carouselBanner2Url String?
+  carouselBanner3Url String?
+  carouselBanner4Url String?
+  carouselBanner5Url String?
+  popupBanner        String?
+  popupBannerUrl     String?
+  streamBanner       String?
+  streamBannerUrl    String?
+}
