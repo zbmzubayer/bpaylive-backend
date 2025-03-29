@@ -35,12 +35,17 @@ export const authGuard = () => async (req: Request, res: Response, next: NextFun
 
     next();
   } catch (error) {
-    res.cookie('next-auth.session-token', '', {
+    const nextAuthCookieName =
+      ENV.NODE_ENV === 'production'
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token';
+    res.cookie(nextAuthCookieName, '', {
       maxAge: -1,
       httpOnly: true,
       secure: ENV.NODE_ENV === 'production',
       sameSite: 'lax',
     });
+
     console.error(error);
     next(error);
   }
