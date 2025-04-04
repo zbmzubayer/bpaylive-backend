@@ -12,9 +12,10 @@ const create = asyncHandler(async (req, res) => {
     throw new ApiError(HttpStatus.BAD_REQUEST, 'Thumbnail is required');
   }
   payload.thumbnail = req.file.filename;
-  console.log(req.file.filename);
   payload.trending = JSON.parse(payload.trending);
-  payload.channelMatches = JSON.parse(payload.channelMatches);
+  if (payload.channelMatches) {
+    payload.channelMatches = JSON.parse(payload.channelMatches);
+  }
   await matchZodSchema.create.parseAsync(payload);
   const result = await matchService.create(payload);
   sendResponse(res, { data: result });
@@ -38,7 +39,9 @@ const update = asyncHandler(async (req, res) => {
     payload.thumbnail = req.file.filename;
   }
   payload.trending = JSON.parse(payload.trending);
-  payload.channelMatches = JSON.parse(payload.channelMatches);
+  if (payload.channelMatches) {
+    payload.channelMatches = JSON.parse(payload.channelMatches);
+  }
   await matchZodSchema.create.parseAsync(payload);
   const result = await matchService.update(id, payload);
   sendResponse(res, { data: result });
