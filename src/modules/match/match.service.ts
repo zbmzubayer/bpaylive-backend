@@ -23,7 +23,7 @@ const create = async (payload: CreateMatchDto) => {
 const findAll = async () => {
   return await prisma.match.findMany({
     include: { sport: true, defaultChannel: true, channelMatches: { select: { channel: true } } },
-    orderBy: { startTime: 'asc' },
+    orderBy: { updatedAt: 'desc' },
   });
 };
 

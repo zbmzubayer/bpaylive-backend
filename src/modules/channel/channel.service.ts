@@ -24,6 +24,7 @@ const create = async (payload: CreateChannelDto): Promise<Channel> => {
 const findAll = async (): Promise<Channel[]> => {
   return await prisma.channel.findMany({
     include: { sportChannels: { select: { sport: true } } },
+    orderBy: { updatedAt: 'desc' },
   });
 };
 
